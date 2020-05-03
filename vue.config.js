@@ -1,4 +1,6 @@
 // vue.config.js
+const webpack = require("webpack");
+
 module.exports = {
   // 选项...
   css: {
@@ -7,5 +9,9 @@ module.exports = {
         javascriptEnabled: true
       }
     }
+  },
+
+  configureWebpack: {
+    plugins: [new webpack.IgnorePlugin(/\.\/locale/, /moment/)]
   }
 };
