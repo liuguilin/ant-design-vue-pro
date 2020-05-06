@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="">尾部</div>
+  <div class="">Ant Design Vue Pro @2019 Create by liuguilin</div>
 </template>
 
 <script>

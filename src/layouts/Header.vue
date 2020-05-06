@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="">头部</div>
+  <div class="header">头部</div>
 </template>
 
 <script>
@@ -35,4 +35,7 @@ export default {
 </script>
 <style lang="less" scoped>
 /* @import url(); 引入公共css类 */
+.header {
+  float: right;
+}
 </style>

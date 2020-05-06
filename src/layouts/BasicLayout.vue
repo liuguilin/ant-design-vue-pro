@@ -1,10 +1,27 @@
 <!--  -->
 <template>
   <div class="">
-    <Header />
-    <SiderMenu />
-    <router-view></router-view>
-    <Footer />
+    <a-layout id="components-layout-demo-side" style="min-height: 100vh">
+      <a-layout-sider :trigger="null" v-model="collapsed" collapsible>
+        <SiderMenu />
+      </a-layout-sider>
+      <a-layout>
+        <a-layout-header style="background: #fff; padding: 0">
+          <a-icon
+            class="trigger"
+            :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+            @click="collapsed = !collapsed"
+          ></a-icon>
+          <Header />
+        </a-layout-header>
+        <a-layout-content style="margin: 0 16px">
+          <router-view></router-view>
+        </a-layout-content>
+        <a-layout-footer style="text-align: center">
+          <Footer />
+        </a-layout-footer>
+      </a-layout>
+    </a-layout>
   </div>
 </template>
 
@@ -20,7 +37,7 @@ export default {
   components: { Header, Footer, SiderMenu },
   data() {
     //这里存放数据
-    return {};
+    return { collapsed: false };
   },
   //监听属性 类似于data概念
   computed: {},
@@ -43,4 +60,13 @@ export default {
 </script>
 <style lang="less" scoped>
 /* @import url(); 引入公共css类 */
+.trigger {
+  padding: 0 20px;
+  line-height: 64px;
+  font-size: 20px;
+}
+
+.trigger:hover {
+  background: #eeeeee;
+}
 </style>
