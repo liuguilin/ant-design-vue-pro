@@ -15,7 +15,10 @@ const router = new Router({
       path: "/user",
       hideInMenu: true,
       component: () =>
-        import(/* webpackChunkName: "layout" */ "../layouts/UserLayout"),
+        import(
+          /* webpackChunkName: "layout" */
+          "../layouts/UserLayout"
+        ),
       children: [
         {
           path: "/user",
@@ -25,13 +28,19 @@ const router = new Router({
           path: "/user/login",
           name: "login",
           component: () =>
-            import(/* webpackChunkName: "user" */ "../views/User/Login")
+            import(
+              /* webpackChunkName: "user" */
+              "../views/User/Login"
+            )
         },
         {
           path: "/user/register",
           name: "register",
           component: () =>
-            import(/* webpackChunkName: "user" */ "../views/User/Register")
+            import(
+              /* webpackChunkName: "user" */
+              "../views/User/Register"
+            )
         }
         // {
         //   path: "/user/register-result",
@@ -47,7 +56,10 @@ const router = new Router({
         authority: ["user", "admin"]
       },
       component: () =>
-        import(/* webpackChunkName: "layout" */ "../layouts/BasicLayout"),
+        import(
+          /* webpackChunkName: "layout" */
+          "../layouts/BasicLayout"
+        ),
       children: [
         // dashboard
         {
