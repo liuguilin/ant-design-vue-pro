@@ -1,38 +1,67 @@
-<!--  -->
 <template>
-  <div class="">菜单</div>
+  <div style="width: 256px">
+    <a-menu
+      :default-selected-keys="['1']"
+      :default-open-keys="['2']"
+      mode="inline"
+      :theme="theme"
+    >
+      <template v-for="item in menuDate">
+        <a-menu-item v-if="!item.children" :key="item.path">
+          <a-icon v-if="item.meta.icon" :type="item.meta.icon" />
+          <span>{{ item.meta.title }}</span>
+        </a-menu-item>
+        <sub-menu v-else :key="item.path" :menu-info="item" />
+      </template>
+    </a-menu>
+  </div>
 </template>
 
 <script>
-//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
-//例如：import 《组件名称》 from '《组件路径》';
+import SubMenu from "./SubMenu";
 
 export default {
-  //import引入的组件需要注入到对象中才能使用
-  components: {},
-  data() {
-    //这里存放数据
-    return {};
+  props: {
+    theme: {
+      type: String,
+      default: "dark"
+    }
   },
-  //监听属性 类似于data概念
-  computed: {},
-  //监控data中的数据变化
-  watch: {},
-  //方法集合
-  methods: {},
-  //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
-  //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
-  beforeCreate() {}, //生命周期 - 创建之前
-  beforeMount() {}, //生命周期 - 挂载之前
-  beforeUpdate() {}, //生命周期 - 更新之前
-  updated() {}, //生命周期 - 更新之后
-  beforeDestroy() {}, //生命周期 - 销毁之前
-  destroyed() {}, //生命周期 - 销毁完成
-  activated() {} //如果页面有keep-alive缓存功能，这个函数会触发
+  components: {
+    "sub-menu": SubMenu
+  },
+  data() {
+    const menuDate = this.getMenuData(this.$router.options.routes);
+    return {
+      collapsed: false,
+      menuDate
+    };
+  },
+  methods: {
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
+    },
+    getMenuData(routes) {
+      const menuDate = [];
+      routes.forEach(item => {
+        if (item.name && !item.hideInMenu) {
+          const newItem = { ...item };
+          delete newItem.children;
+          if (item.children && !item.hideChildrenInMenu) {
+            newItem.children = this.getMenuData(item.children);
+            console.log(newItem.children);
+          }
+          menuDate.push(newItem);
+        } else if (
+          !item.hideInMenu &&
+          !item.hideChildrenInMenu &&
+          item.children
+        ) {
+          menuDate.push(...this.getMenuData(item.children));
+        }
+      });
+      return menuDate;
+    }
+  }
 };
 </script>
-<style lang="less" scoped>
-/* @import url(); 引入公共css类 */
-</style>

@@ -1,9 +1,19 @@
 <!--  -->
 <template>
-  <div class="">
+  <div :class="[`nav-theme-${navTheme}`, `nav-layout-${navLayout}`]">
     <a-layout id="components-layout-demo-side" style="min-height: 100vh">
-      <a-layout-sider :trigger="null" v-model="collapsed" collapsible>
-        <SiderMenu />
+      <a-layout-sider
+        v-if="navLayout === 'left'"
+        :theme="navTheme"
+        :trigger="null"
+        v-model="collapsed"
+        collapsible
+        width="256px"
+      >
+        <div class="logo">
+          Ant Design Pro
+        </div>
+        <SiderMenu :theme="navTheme" />
       </a-layout-sider>
       <a-layout>
         <a-layout-header style="background: #fff; padding: 0">
@@ -22,6 +32,7 @@
         </a-layout-footer>
       </a-layout>
     </a-layout>
+    <SettingDrawer />
   </div>
 </template>
 
@@ -31,16 +42,23 @@
 import Header from "./Header";
 import Footer from "./Footer";
 import SiderMenu from "./SiderMenu";
-
+import SettingDrawer from "../components/SettingDrawer/index";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: { Header, Footer, SiderMenu },
+  components: { Header, Footer, SiderMenu, SettingDrawer },
   data() {
     //这里存放数据
     return { collapsed: false };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    navTheme() {
+      return this.$route.query.navTheme || "dark";
+    },
+    navLayout() {
+      return this.$route.query.navLayout || "left";
+    }
+  },
   //监控data中的数据变化
   watch: {},
   //方法集合
@@ -58,7 +76,7 @@ export default {
   activated() {} //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
-<style lang="less" scoped>
+<style scoped>
 /* @import url(); 引入公共css类 */
 .trigger {
   padding: 0 20px;
@@ -68,5 +86,16 @@ export default {
 
 .trigger:hover {
   background: #eeeeee;
+}
+
+.logo {
+  height: 64px;
+  line-height: 64px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.nav-theme-dark >>> .logo {
+  color: #ffffff;
 }
 </style>

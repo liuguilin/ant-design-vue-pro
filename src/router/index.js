@@ -169,13 +169,16 @@ const router = new Router({
     {
       path: "*",
       name: "404",
+      hideInMenu: true,
       component: NotFound
     }
   ]
 });
 
-router.beforeEach((to, form, next) => {
-  NProgress.start();
+router.beforeEach((to, from, next) => {
+  if (to.path !== from.path) {
+    NProgress.start();
+  }
   next();
 });
 
