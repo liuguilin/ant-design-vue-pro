@@ -49,13 +49,12 @@ export default {
           delete newItem.children;
           if (item.children && !item.hideChildrenInMenu) {
             newItem.children = this.getMenuData(item.children);
-            console.log(newItem.children);
           }
           menuDate.push(newItem);
         } else if (
+          item.children &&
           !item.hideInMenu &&
-          !item.hideChildrenInMenu &&
-          item.children
+          !item.hideChildrenInMenu
         ) {
           menuDate.push(...this.getMenuData(item.children));
         }
