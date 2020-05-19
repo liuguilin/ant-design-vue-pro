@@ -1,17 +1,21 @@
 <template>
   <div style="width: 256px">
     <a-menu
-      :default-selected-keys="['1']"
-      :default-open-keys="['2']"
+      :selectedKeys="selectedKeys"
+      :openKeys.sync="openKeys"
       mode="inline"
       :theme="theme"
     >
-      <template v-for="item in menuDate">
-        <a-menu-item v-if="!item.children" :key="item.path">
+      <template v-for="item in menuData">
+        <a-menu-item
+          v-if="!item.children"
+          :key="item.path"
+          @click="() => $router.push({ path: item.path, query: $route.query })"
+        >
           <a-icon v-if="item.meta.icon" :type="item.meta.icon" />
           <span>{{ item.meta.title }}</span>
         </a-menu-item>
-        <sub-menu v-else :key="item.path" :menu-info="item" />
+        <sub-menu v-else :menu-info="item" :key="item.path" />
       </template>
     </a-menu>
   </div>
@@ -19,6 +23,7 @@
 
 <script>
 import SubMenu from "./SubMenu";
+import { check } from "../utils/auth";
 
 export default {
   props: {
@@ -30,36 +35,65 @@ export default {
   components: {
     "sub-menu": SubMenu
   },
+
   data() {
-    const menuDate = this.getMenuData(this.$router.options.routes);
+    this.selectedKeysMap = {};
+    this.openKeysMap = {};
+    const menuData = this.getMenuData(this.$router.options.routes);
     return {
       collapsed: false,
-      menuDate
+      menuData,
+      selectedKeys: this.selectedKeysMap[this.$route.path],
+      openKeys: this.collapsed ? [] : this.openKeysMap[this.$route.path]
     };
+  },
+  watch: {
+    "$route.path": function(val) {
+      console.log(val);
+      this.selectedKeys = this.selectedKeysMap[val];
+      this.openKeys = this.collapsed ? [] : this.openKeysMap[val];
+    }
   },
   methods: {
     toggleCollapsed() {
       this.collapsed = !this.collapsed;
     },
-    getMenuData(routes) {
-      const menuDate = [];
-      routes.forEach(item => {
+    getMenuData(routes = [], parentKeys = [], selectedKey) {
+      const menuData = [];
+      for (let item of routes) {
+        if (item.meta && item.meta.authority && !check(item.meta.authority)) {
+          continue;
+        }
         if (item.name && !item.hideInMenu) {
+          this.openKeysMap[item.path] = parentKeys;
+          this.selectedKeysMap[item.path] = [selectedKey || item.path];
           const newItem = { ...item };
           delete newItem.children;
           if (item.children && !item.hideChildrenInMenu) {
-            newItem.children = this.getMenuData(item.children);
+            newItem.children = this.getMenuData(item.children, [
+              ...parentKeys,
+              item.path
+            ]);
+          } else {
+            this.getMenuData(
+              item.children,
+              selectedKey ? parentKeys : [...parentKeys, item.path],
+              selectedKey || item.path
+            );
           }
-          menuDate.push(newItem);
+          menuData.push(newItem);
         } else if (
-          item.children &&
           !item.hideInMenu &&
-          !item.hideChildrenInMenu
+          !item.hideChildrenInMenu &&
+          item.children
         ) {
-          menuDate.push(...this.getMenuData(item.children));
+          menuData.push(
+            ...this.getMenuData(item.children, [...parentKeys, item.path])
+          );
         }
-      });
-      return menuDate;
+      }
+
+      return menuData;
     }
   }
 };
