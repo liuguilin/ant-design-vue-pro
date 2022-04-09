@@ -11,7 +11,7 @@
     "dependencies": {
         "ant-design-vue": "^1.5.4",
         "core-js": "^3.6.4",
-        "moment": "2.24.0",
+        "moment": "2.29.2",
         "moment-timezone": "^0.5.28",
         "nprogress": "^0.2.0",
         "vue": "^2.6.11",
@@ -39,7 +39,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "resolutions": {
-        "moment": "2.24.0"
+        "moment": "2.29.2"
     },
     "gitHooks": {
         "pre-commit": "lint-staged"
